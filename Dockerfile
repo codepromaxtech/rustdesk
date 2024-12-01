@@ -56,8 +56,15 @@ COPY ./rustdesk-config/id_ed25519.pub /etc/rustdesk/id_ed25519.pub
 # Copy built Web Client
 COPY --from=builder /rustdesk-web/dist /var/www/rustdesk-web
 
-# Copy NGINX configuration
-COPY nginx-config/default /etc/nginx/sites-available/default
+# Copy the NGINX configuration file
+COPY ./rustdesk /etc/nginx/sites-available/rustdesk
+
+# Enable the site by creating a symbolic link
+RUN ln -s /etc/nginx/sites-available/rustdesk /etc/nginx/sites-enabled/rustdesk
+
+# Remove the default NGINX configuration if necessary
+RUN rm /etc/nginx/sites-enabled/default
+
 
 # Copy entrypoint script
 COPY entrypoint.sh /usr/local/bin/entrypoint.sh
